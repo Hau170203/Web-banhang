@@ -1,0 +1,153 @@
+const Product = require('../models/product.model');
+
+
+const createProduct = async (req, res) => {
+    try {
+        // console.log(req.body);
+        const { name, image, type, countInStock, price, rating, description } = req.body;
+
+        const newProduct = new Product({
+            name: name,
+            image: image,
+            type: type,
+            countInStock: countInStock,
+            price: price,
+            rating: rating,
+            description: description
+        });
+        const respon = await newProduct.save();
+        if (respon) {
+            return res.status(200).json({ message: 'Tạo sản phẩm thành công', data: respon });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const updateProduct = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const respon = await Product.findByIdAndUpdate(id, req.body, { new: true });
+
+        if (respon) {
+            return res.status(200).json({ message: 'Cập nhật sản phẩm thành công', data: respon });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+const deleteProduct = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const respon = await Product.findByIdAndDelete(id);
+        if (respon) {
+            return res.status(200).json({ message: 'Xóa sản phẩm thành công' });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+const getAllProduct = async (req, res) => {
+    try {
+
+        if (req.query) {
+            let page = req.query.page || 1;
+            let limit = req.query.limit || await Product.countDocuments();
+            // console.log( page, limit);
+            console.log(req.query);
+            if (req.query.sortKey && req.query.sortValue) {
+                let sortKey = req.query.sortKey;
+                let sortValue = req.query.sortValue;
+                // const objectsort = {};
+                objectsort[sortKey] = sortValue;
+                // console.log(objectsort);
+                const respon = await Product.find().limit(limit * 1).skip((page - 1) * limit).sort(objectsort);
+                if (respon) {
+                    return res.status(200)
+                        .json({
+                            message: 'Lấy theo sắp xếp sản phẩm thành công',
+                            data: respon,
+                            currentPage: page,
+                            totalPages: Math.ceil(await Product.countDocuments() / limit)
+                        });
+                }
+            }else if(req.query.searchKey && req.query.searchValue){
+                let searchKey = req.query.searchKey;
+                let searchValue = req.query.searchValue;
+                const respon = await Product.find({[searchKey]: { $regex: searchValue, $options: 'i' }}).limit(limit * 1).skip((page - 1) * limit); 
+                if (respon) {
+                    return res.status(200)
+                        .json({
+                            message: 'Lấy theo tìm kiếm sản phẩm thành công',
+                            data: respon,
+                            currentPage: page,
+                            totalPages: Math.ceil(await Product.find({[searchKey]: { $regex: searchValue, $options: 'i' }}).countDocuments() / limit)
+                        });
+                    }
+            } else {
+                const respon = await Product.find().limit(limit * 1).skip((page - 1) * limit);
+                if (respon) {
+                    return res.status(200)
+                        .json({
+                            message: 'Lấy theo trang sản phẩm thành công',
+                            data: respon,
+                            currentPage: page,
+                            totalPages: Math.ceil(await Product.countDocuments() / limit)
+                        });
+                }
+            }
+
+ 
+        } else {
+            const respon = await Product.find();
+            if (respon) {
+                return res.status(200).json({ message: 'Lấy tất cả sản phẩm thành công', data: respon });
+            }
+        }
+        // if (req.query.page && req.query.limit && !req.query.sort) {
+        //     const { page , limit } = req.query;
+        //     const respon = await Product.find().limit(limit * 1).skip((page - 1) * limit);
+        //     if (respon) {
+        //         return res.status(200)
+        //             .json({
+        //                 message: 'Lấy tất cả sản phẩm thành công',
+        //                 data: respon,
+        //                 currentPage: page,
+        //                 totalPages: Math.ceil(await Product.countDocuments() / limit)
+        //             });
+        //     }
+        // } else {
+        //     const respon = await Product.find();
+        //     if (respon) {
+        //         return res.status(200).json({ message: 'Lấy tất cả sản phẩm thành công', data: respon });
+        //     }
+        // }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+const detailProduct = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const respon = await Product.findById(id);
+        if (respon) {
+            return res.status(200).json({ message: 'Lấy sản phẩm thành công', data: respon });
+        } else {
+            return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+module.exports = {
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    getAllProduct,
+    detailProduct
+}
