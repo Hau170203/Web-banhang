@@ -11,7 +11,7 @@ export const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const {Data, decoded}= handleDecode();
-    console.log(Data, decoded);
+    // console.log(Data, decoded);
       if (decoded?.id && Data) {
         handleDetailUser(decoded?.id, Data)
       }

@@ -47,13 +47,13 @@ export const SignIn = () => {
     );
     useEffect(() => {
         if (mutation.isSuccess) {
-            console.log("mutation token", mutation.data);
+            // console.log("mutation token", mutation.data);
             const token = mutation.data?.access_token;
             if (token) {
                 localStorage.setItem("token", token);
                 messageApi.success("Đăng nhập thành công");
                 const decoded = jwtDecode<decode>(token);
-                console.log(decoded);
+                // console.log(decoded);
                 if (decoded?.id) {
                     handleDetailUser(decoded?.id, token)
                 }
@@ -68,7 +68,7 @@ export const SignIn = () => {
 
     const handleDetailUser = async (id: string, access_token: string) => {
         const res = await userSevice.detailUser(id);
-        console.log(res)
+        // console.log(res)
         if (res.user) {
             dispatch(updataUser({ ...res.user, access_token }))
         }

@@ -1,7 +1,7 @@
-import React from 'react';
-import {  UserDeleteOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { UserDeleteOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Dropdown, Space } from 'antd';
+import { Avatar, Dropdown, Space } from 'antd';
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../redux/store"
 import * as userSevice from "../services/userService"
@@ -12,7 +12,7 @@ const items: MenuProps['items'] = [
   {
     key: '3',
     label: (
-      <a  rel="noopener noreferrer" href="/sign-in">
+      <a rel="noopener noreferrer" href="/sign-in">
         Đăng nhập
       </a>
     ),
@@ -21,7 +21,7 @@ const items: MenuProps['items'] = [
   {
     key: '4',
     label: (
-      <a  rel="noopener noreferrer" href="/register">
+      <a rel="noopener noreferrer" href="/register">
         Đăng ký
       </a>
     ),
@@ -43,14 +43,20 @@ const items2: MenuProps['items'] = [
 ];
 
 
-const DropDown: React.FC = () =>{
+const DropDown: React.FC = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-  const handleMenuClick: MenuProps['onClick']  = async (e) => {
-    if(e.key === "1"){
+  const [name, setName] = useState('');
+  const [avatar, setAvatar] = useState("");
+  useEffect(() => {
+    setName(user?.name)
+    setAvatar(user?.avatar)
+  }, [user?.name, user?.avatar])
+  const handleMenuClick: MenuProps['onClick'] = async (e) => {
+    if (e.key === "1") {
       navigate('/detail-user');
-    }else{
+    } else {
       await userSevice.logOut();
       localStorage.removeItem('token');
       dispatch(resetUser());
@@ -62,24 +68,36 @@ const DropDown: React.FC = () =>{
       <a onClick={(e) => e.preventDefault()}>
         <Space>
           <div className='flex items-center text-white cursor-pointer'>
-            <div className="overflow-hidden ">
-              <UserSwitchOutlined className='text-3xl' />
-            </div>
-            {user?.name ? (
+
+            {user.name ? (
+              <div className='flex items-center'>
+                {user.avatar ? (
+                  <div className=''>
+                    <Avatar size={45} src={avatar} />
+                  </div>
+                ): (
+                  <Avatar size={45} icon={<UserOutlined />} />
+                )}
                 <div className='pl-2 text-sm hidden lg:inline-block'>
-                {user.name}
+                  {name}
+                </div>
               </div>
-            ): (
-              <div className='pl-2 hidden lg:inline-block'>
-              <p className="text-sm ">Tài khoản</p>
-              <p className='text-sm'>Đăng nhập / Đăng ký</p>
-            </div>
+            ) : (
+              <>
+                <div className="overflow-hidden  ">
+                  <UserSwitchOutlined className='text-3xl' />
+                </div>
+                <div className='pl-2 hidden lg:inline-block'>
+                  <p className="text-sm ">Tài khoản</p>
+                  <p className='text-sm'>Đăng nhập / Đăng ký</p>
+                </div>
+              </>
             )}
           </div>
         </Space>
       </a>
     </Dropdown>
   );
-} 
+}
 
 export default DropDown;

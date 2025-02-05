@@ -1,10 +1,14 @@
-import { message, Modal } from 'antd';
+import { Button, message, Modal, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import * as userService from '../services/userService'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import Loading from './Loading';
 import { useMutationHook } from '../hooks/useMutationHook';
+import { updataUser } from '../redux/slice/userSlice';
+import { UploadOutlined } from '@ant-design/icons';
+import { UploadChangeParam } from "antd/es/upload/interface";
+import { FileType, getBase64 } from '../ultis';
 
 interface pros {
   open: boolean,
@@ -14,82 +18,107 @@ interface pros {
 const ModalUpdateUser = ({ open, setOpen }: pros) => {
   const user = useSelector((state: RootState) => state.user);
   const [messageApi, contextHolder] = message.useMessage();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [avatar, setAvatar] = useState('');
+  const dispatch = useDispatch();
 
 
   // const [confirmLoading, setConfirmLoading] = useState(false);
-  const [data, setData] = useState({
+  const [dataUser, setDataUser] = useState({
     name: user?.name || "",
     email: user?.email || "",
+    avatar: user?.avatar || "",
     phone: user?.phone || "",
     address: user?.address || ""
   })
 
   useEffect(() => {
-    setData({
+    setDataUser({
       name: user?.name || "",
       email: user?.email || "",
       phone: user?.phone || "",
+      avatar: user?.avatar || "",
       address: user?.address || ""
     })
-  },[user])
+  }, [user])
 
   const handleCancel = () => {
     setOpen(false)
   }
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(e.target.value);
-    setData({
-      ...data,
+    setDataUser({
+      ...dataUser,
       name: e.target.value,
     })
   };
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(e.target.value)
-    setData({
-      ...data,
+    setDataUser({
+      ...dataUser,
       email: e.target.value,
     })
   }
 
   const handleChangePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(e.target.value)
-    setData({
-      ...data,
+    setDataUser({
+      ...dataUser,
       phone: e.target.value,
     })
   }
 
   const handleChangeAddress = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // console.log(e.target.value)
-    setData({
-      ...data,
+    setDataUser({
+      ...dataUser,
       address: e.target.value,
     })
-  }
+  };
+
+  const handleChangeAvatar =async ( info: UploadChangeParam) => {
+    // console.log(info.fileList[0]);
+    const file = info.fileList[0];
+
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    };
+    if(file.preview){
+      setAvatar(file.preview)
+    }
+    setDataUser({
+      ...dataUser,
+      avatar
+    })
+  };
+
 
   const mutation = useMutationHook(
-    ({ id, data }: { id: string; data: userService.updataUser }) => userService.updateUser(id, data)
+    ({ id, dataUser }: { id: string; dataUser: userService.updataUser }) => userService.updateUser(id, dataUser)
   );
 
-  const { isLoading, isSuccess, isError } = mutation
+  const { data, isSuccess, isError } = mutation;
+  console.log(mutation)
   useEffect(() => {
     if (isSuccess) {
-      messageApi.success("Cập nhật thành công")
+      messageApi.success(data?.message)
+      dispatch(updataUser(data?.user))
     }
     if (isError) {
-      messageApi.error("Cập nhật thất bại")
+      messageApi.error(mutation.error && (mutation.error as any).response.data.message);
     }
   }, [isSuccess, isError])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true)
-    console.log(data)
+    console.log(dataUser)
     if (user._id) {
-      mutation.mutate({ id: user._id, data });
+      mutation.mutate({ id: user._id, dataUser });
     }
+    setLoading(false)
+    setOpen(false);
   }
 
   return (
@@ -107,7 +136,7 @@ const ModalUpdateUser = ({ open, setOpen }: pros) => {
             <input type="text"
               name="name"
               className='border border-black ml-5 w-[300px] h-7 pl-1'
-              defaultValue={data?.name}
+              defaultValue={dataUser?.name}
               onChange={handleChangeName} />
           </div>
           <div className='email'>
@@ -115,15 +144,25 @@ const ModalUpdateUser = ({ open, setOpen }: pros) => {
             <input type="email"
               name="email"
               className='border border-black ml-[30px] w-[300px] h-7 pl-1'
-              defaultValue={data?.email}
+              defaultValue={dataUser?.email}
               onChange={handleChangeEmail} />
+          </div>
+          <div className='avatar flex'>
+            <label htmlFor="avatar" className='text-base'>Avatar: </label>
+            <Upload className='ml-[19px] mr-5' onChange={handleChangeAvatar} maxCount={1}>
+              <Button  icon={<UploadOutlined />}>Upload</Button>
+            </Upload>
+            {avatar && (
+              <img src={avatar} alt="avatar" 
+              style={{ width: "70px", height: "70px", borderRadius:"50%", objectFit:"cover"  }}/>
+            )}
           </div>
           <div className='phone'>
             <label htmlFor="phone" className='text-base'>Phone:</label>
             <input type="text"
               name="phone"
               className='border border-black ml-[23px] w-[300px] h-7 pl-1'
-              defaultValue={data?.phone}
+              defaultValue={dataUser?.phone}
               onChange={handleChangePhone} />
           </div>
           <div className='address flex items-center'>
@@ -131,7 +170,7 @@ const ModalUpdateUser = ({ open, setOpen }: pros) => {
             <textarea name="address"
               rows={2} cols={50}
               className='border border-black ml-[12px] pl-1 '
-              onChange={handleChangeAddress} defaultValue={data?.address}></textarea>
+              onChange={handleChangeAddress} defaultValue={dataUser?.address}></textarea>
           </div>
           <div className='flex justify-end'>
             <Loading isLoading={loading} delay={200}>

@@ -11,9 +11,13 @@
 .ant-card-body {
     padding: 10px 20px!important;
 }
+.ant-upload-list-item-container{
+    display: none!important;
+}
 
 input[type="number"]::-webkit-inner-spin-button, 
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
+};
+

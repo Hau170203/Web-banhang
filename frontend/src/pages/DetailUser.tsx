@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import { RootState } from "../redux/store";
 import ModalUpdateUser from "../components/ModalUpdateUser";
-import {  useState } from "react";
+import { useState } from "react";
 
 
 const DetailUser = () => {
@@ -9,7 +9,7 @@ const DetailUser = () => {
     const [open, setOpen] = useState(false);
     return (
         <>
-            <ModalUpdateUser open={open} setOpen={setOpen}  />
+            <ModalUpdateUser open={open} setOpen={setOpen} />
             <div className="h-[75vh]">
                 <div className="detailUser mx-3 bg-white my-5 rounded py-5 ">
                     <div className="  border-b-2 border-black mx-5 pb-5">
@@ -17,7 +17,8 @@ const DetailUser = () => {
                         <p className="text-base">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
                     </div>
                     <div className="mt-7 border-2  border-gray-500 rounded mx-5  py-6">
-                            <div className="m-3 space-y-6 px-10">
+                        <div className="flex">
+                            <div className="w-[50%] m-3 space-y-6 px-10">
                                 <div className="name">
                                     <label htmlFor="name" className="text-base font-medium" >Họ tên: </label>
                                     <span>{user?.name}</span>
@@ -34,10 +35,14 @@ const DetailUser = () => {
                                     <label htmlFor="address" className="text-base font-medium">Địa chỉ: </label>
                                     <span>{user?.address}</span>
                                 </div>
-                                <div className="flex justify-end">
-                                    <button className="text-base font-medium bg-blue-600 hover:bg-blue-400 px-4 py-2 text-white rounded" onClick={() => setOpen(true)}>chỉnh sửa</button>
-                                </div>
                             </div>
+                            <div className="w-[50%] border-l-2 border-black flex justify-center items-center">
+                                <img src={user?.avatar} alt="avatar" className="w-32 h-32 rounded-full object-cover" />
+                            </div>
+                        </div>
+                        <div className="flex justify-end pr-8 mt-2">
+                            <button className="text-base font-medium bg-blue-600 hover:bg-blue-400 px-4 py-2 text-white rounded" onClick={() => setOpen(true)}>chỉnh sửa</button>
+                        </div>
                     </div>
                 </div>
             </div>
