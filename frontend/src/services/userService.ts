@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { dataForm } from '../pages/SignIn';
 import { DataFormRegister } from '../pages/Register';
-const base_URL = "http://localhost:3000/api/user/"
+const base_URL = "http://localhost:3000/api/user/";
 export const axiosJWT = axios.create();
 
  export interface updataUser {

@@ -1,11 +1,12 @@
-
 import { Layout } from "../layout/Layout"
+import Admin from "../pages/Admin"
 import { DetailProduct } from "../pages/DetailProduct"
 import DetailUser from "../pages/DetailUser"
 import { Home } from "../pages/Home"
 import { NotFound } from "../pages/NotFound"
 import { Register } from "../pages/Register"
 import { SignIn } from "../pages/SignIn"
+import { PrivateRouter } from "./PrivateRouter"
 export const routes = [
     {
         path: "/",
@@ -30,6 +31,16 @@ export const routes = [
             {
                 path: "/detail-user",
                 element: <DetailUser />
+            },
+            
+        ]
+    },
+    {
+        element: <PrivateRouter />,
+        children: [
+            {
+                path: '/admin',
+                element: <Admin />
             }
         ]
     },

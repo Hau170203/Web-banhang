@@ -1,20 +1,31 @@
-import { Card } from 'antd';
-import image1 from "../assets/image/image1.jpeg";
+import { Badge, Card, Rate } from 'antd';
+import { product } from '../pages/Home';
 
 
-const CartProduct = () => (
-    <Card
-        hoverable
-        style={{ width: 250, borderRadius: 0, padding:0,  overflow:"hidden"}}
-        cover={<img alt="example" src={image1}  />}
-    >
-        <div >
-            <h4 className='text-center text-base text-gray-400'>Nike</h4>
-            <h3 className='text-base'>Giày Nike Quest 6 Nam - Xám</h3>
-            <p className='text-base text-red-500'>2.390.000₫ <span>-11%</span></p>
-            <p className='text-base line-through'>2.700.000₫</p>
-        </div>
-    </Card>
-);
+
+const CartProduct: React.FC<{ product: product }> = ({ product }) => {
+    const { name, type, image, price, countInStock, rating, seller, discount } = product;
+    return (
+        <>
+            <Badge.Ribbon text={(discount || "11")+" %" } color='red'>
+                <Card
+                    hoverable
+                    style={{ width: 250, borderRadius: 0, padding: 0, overflow: "hidden" }}
+                    cover={<img alt={name} src={image} />}
+                >
+                    <div >
+                        <Rate disabled allowHalf defaultValue={rating} />
+                        <h4 className='text-center text-base text-gray-500 bg-gray-200'>{type}</h4>
+                        <h3 className='text-base'>{name}</h3>
+                        <p className='text-base text-red-500'>{price}<span></span></p>
+                        <p className='text-base'>Số lượng còn lại: {countInStock}</p>
+                        <p className='text-base'>Đã bán: {seller}</p>
+                    </div>
+                </Card>
+            </Badge.Ribbon>
+        </>
+    )
+}
+
 
 export default CartProduct;

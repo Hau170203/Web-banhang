@@ -9,6 +9,7 @@ export interface user {
   phone: string,
   address: string,
   access_token: string,
+  isAdmin: boolean
 }
 
 const initialState: user = {
@@ -19,6 +20,7 @@ const initialState: user = {
   phone: "",
   address: "",
   access_token: "",
+  isAdmin: false
 }
 
 export const userSlice = createSlice({
@@ -26,7 +28,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     updataUser: (state, action: PayloadAction<user>) => {
-      const { _id, name, email, avatar, phone, address, access_token } = action.payload;
+      const { _id, name, email, avatar, phone, address, access_token, isAdmin } = action.payload;
       // console.log(action)
       state._id = _id,
         state.name = name || "",
@@ -34,7 +36,8 @@ export const userSlice = createSlice({
         state.avatar = avatar || "",
         state.phone = phone,
         state.address = address || "",
-        state.access_token = access_token
+        state.access_token = access_token,
+        state.isAdmin = isAdmin
     },
     resetUser: (state) => {
       state._id = "",
@@ -42,7 +45,8 @@ export const userSlice = createSlice({
         state.email = "",
         state.phone = "",
         state.address = "",
-        state.access_token = ""
+        state.access_token = "",
+        state.isAdmin = false
     }
   },
 })

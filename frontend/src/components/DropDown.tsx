@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { UserDeleteOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import React, { useEffect, useMemo, useState } from 'react';
+import { AreaChartOutlined, UserDeleteOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Avatar, Dropdown, Space } from 'antd';
 import { useDispatch, useSelector } from "react-redux"
@@ -41,8 +41,6 @@ const items2: MenuProps['items'] = [
     icon: <UserDeleteOutlined />
   }
 ];
-
-
 const DropDown: React.FC = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
@@ -52,10 +50,19 @@ const DropDown: React.FC = () => {
   useEffect(() => {
     setName(user?.name)
     setAvatar(user?.avatar)
-  }, [user?.name, user?.avatar])
+  }, [user?.name, user?.avatar]);
+
+  const items3 = useMemo(() => {
+    if (user?.isAdmin) {
+      return [...items2, { key: '5', label: 'Quản lý hệ thống', icon: <AreaChartOutlined /> }];
+    }
+    return items2;
+  }, [user?.isAdmin]);
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
     if (e.key === "1") {
       navigate('/detail-user');
+    } else if(e.key ==="5"){
+      navigate('/admin');
     } else {
       await userSevice.logOut();
       localStorage.removeItem('token');
@@ -64,18 +71,17 @@ const DropDown: React.FC = () => {
     }
   }
   return (
-    <Dropdown menu={{ items: user?.name ? items2 : items, onClick: handleMenuClick }}>
+    <Dropdown menu={{ items: user?.name ? items3 : items, onClick: handleMenuClick }}>
       <a onClick={(e) => e.preventDefault()}>
         <Space>
           <div className='flex items-center text-white cursor-pointer'>
-
             {user.name ? (
               <div className='flex items-center'>
                 {user.avatar ? (
                   <div className=''>
                     <Avatar size={45} src={avatar} />
                   </div>
-                ): (
+                ) : (
                   <Avatar size={45} icon={<UserOutlined />} />
                 )}
                 <div className='pl-2 text-sm hidden lg:inline-block'>
