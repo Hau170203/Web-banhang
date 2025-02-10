@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.5.0",
     "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-query-devtools": "^4.36.1",
+    "@tinymce/tinymce-react": "^5.1.1",
     "antd": "^5.22.5",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
@@ -22,7 +23,8 @@
     "react-redux": "^9.2.0",
     "react-router": "^7.0.2",
     "react-slick": "^0.30.2",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "tinymce": "^7.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

@@ -8,46 +8,21 @@ interface DataType {
     address: string;
   }
 
-  const columns: TableColumnsType<DataType> = [
+  const columns = [
     {
-      title: 'Name',
+      title: 'Tên sản phẩm',
       dataIndex: 'name',
-      render: (text: string) => <a>{text}</a>,
+      key: 'name',
     },
     {
-      title: 'Age',
+      title: 'image',
       dataIndex: 'age',
+      key: 'age',
     },
     {
       title: 'Address',
       dataIndex: 'address',
-    },
-  ];
-  
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-    },
-    {
-      key: '4',
-      name: 'Disabled User',
-      age: 99,
-      address: 'Sydney No. 1 Lake Park',
+      key: 'address',
     },
   ];
 
@@ -60,13 +35,15 @@ interface DataType {
     //   name: record.name,
     // }),
   };
-const TableComponent = () => {
+const TableComponent = ({pros}: any) => {
+  console.log(pros)
+
   return (
      <div>
       <Table<DataType>
         rowSelection={{ type: "checkbox", ...rowSelection }}
         columns={columns}
-        dataSource={data}
+        // dataSource={}
       />
     </div>
   )

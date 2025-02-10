@@ -11,6 +11,10 @@ const productSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        imageDetail: {
+            type: [String],
+            default: []
+        },
         type: {
             type: String,
             required: true
@@ -25,7 +29,6 @@ const productSchema = new mongoose.Schema(
         },
         rating: {
             type: Number,
-            required: true
         },
         description: {
             type: String,

@@ -2,8 +2,8 @@ const Product = require('../models/product.model');
 
 module.exports.createProduct = async (req, res, next) => {
     try {
-        const {name, image, type, countInStock, price, rating, description} = req.body;
-        if(!name || !image || !type || !countInStock || !price || !rating) {
+        const {name, image, type, countInStock, discount, seller, price} = req.body;
+        if(!name || !image || !type || !countInStock || !price || !discount || !seller ) {
             return res.status(400).json({message: "Vui lòng điền đầy đủ thông tin"});
         } else if(price < 0 ){
             return res.status(400).json({message: "Giá tiền không hợp lệ"});

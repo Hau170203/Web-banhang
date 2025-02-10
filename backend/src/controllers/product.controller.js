@@ -1,19 +1,59 @@
 const Product = require('../models/product.model');
-
+const cloudinary = require("../helpers/cloudinary");
 
 const createProduct = async (req, res) => {
     try {
         // console.log(req.body);
-        const { name, image, type, countInStock, price, rating, description } = req.body;
+        // console.log("ok");
+        const { name, image, imageDetail, type, countInStock, price, description, discount, seller } = req.body;
+
+        let newImage = "";
+        if (image) {
+            try {
+                // Upload ảnh lên Cloudinary
+                const uploadedImage = await cloudinary.uploader.upload(image);
+
+                if (uploadedImage) {
+                    newImage = uploadedImage.secure_url;
+                }
+            } catch (error) {
+                console.error("Lỗi khi upload avatar:", error);
+            }
+        }
+        // console.log(newImage);
+        let arrayImageDetail = [];
+        if (imageDetail) {
+            const arrayImage = JSON.parse(imageDetail);
+            // console.log(arrayImage)
+            for (const image of arrayImage) {
+                try {
+                    // Kiểm tra nếu ảnh đã có URL (tránh upload trùng lặp)
+                    if (!image.startsWith("http")) {
+                        const uploadedImage = await cloudinary.uploader.upload(image);
+
+                        if (uploadedImage) {
+                            arrayImageDetail.push(uploadedImage.secure_url);
+                        }
+                    } else {
+                        arrayImageDetail.push(image);
+                    }
+                } catch (error) {
+                    console.error("Lỗi khi upload ảnh:", error);
+                }
+            };
+        }
+        console.log("arrayImage:", arrayImageDetail);
 
         const newProduct = new Product({
             name: name,
-            image: image,
+            image: newImage,
+            imageDetail: arrayImageDetail,
             type: type,
             countInStock: countInStock,
             price: price,
-            rating: rating,
-            description: description
+            description: description,
+            discount: discount,
+            seller: seller
         });
         const respon = await newProduct.save();
         if (respon) {
@@ -74,19 +114,19 @@ const getAllProduct = async (req, res) => {
                             totalPages: Math.ceil(await Product.countDocuments() / limit)
                         });
                 }
-            }else if(req.query.searchKey && req.query.searchValue){
+            } else if (req.query.searchKey && req.query.searchValue) {
                 let searchKey = req.query.searchKey;
                 let searchValue = req.query.searchValue;
-                const respon = await Product.find({[searchKey]: { $regex: searchValue, $options: 'i' }}).limit(limit * 1).skip((page - 1) * limit); 
+                const respon = await Product.find({ [searchKey]: { $regex: searchValue, $options: 'i' } }).limit(limit * 1).skip((page - 1) * limit);
                 if (respon) {
                     return res.status(200)
                         .json({
                             message: 'Lấy theo tìm kiếm sản phẩm thành công',
                             data: respon,
                             currentPage: page,
-                            totalPages: Math.ceil(await Product.find({[searchKey]: { $regex: searchValue, $options: 'i' }}).countDocuments() / limit)
+                            totalPages: Math.ceil(await Product.find({ [searchKey]: { $regex: searchValue, $options: 'i' } }).countDocuments() / limit)
                         });
-                    }
+                }
             } else {
                 const respon = await Product.find().limit(limit * 1).skip((page - 1) * limit);
                 if (respon) {
@@ -100,7 +140,7 @@ const getAllProduct = async (req, res) => {
                 }
             }
 
- 
+
         } else {
             const respon = await Product.find();
             if (respon) {
