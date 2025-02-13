@@ -42,7 +42,7 @@ const createProduct = async (req, res) => {
                 }
             };
         }
-        console.log("arrayImage:", arrayImageDetail);
+        // console.log("arrayImage:", arrayImageDetail);
 
         const newProduct = new Product({
             name: name,
@@ -67,8 +67,65 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const id = req.params.id;
-        const respon = await Product.findByIdAndUpdate(id, req.body, { new: true });
+        // console.log(req.body);
+        const { name, image, imageDetail, type, countInStock, price, description, discount, seller } = req.body;
 
+        let newImage = "";
+        if (image) {
+            try {
+                // Upload ảnh lên Cloudinary
+                const uploadedImage = await cloudinary.uploader.upload(image);
+
+                if (uploadedImage) {
+                    newImage = uploadedImage.secure_url;
+                }
+            } catch (error) {
+                console.error("Lỗi khi upload avatar:", error);
+            }
+        }
+        console.log(newImage);
+
+        let arrayImageDetail = [];
+        if (imageDetail) {
+            try {
+                arrayImage = Array.isArray(imageDetail) ? imageDetail : JSON.parse(imageDetail);
+            } catch (error) {
+                return res.status(400).json({ message: "imageDetail không hợp lệ" });
+            }
+            // console.log(arrayImage)
+            for (const image of arrayImage) {
+                try {
+                    // Kiểm tra nếu ảnh đã có URL (tránh upload trùng lặp)
+                    if (!image.startsWith("http")) {
+                        const uploadedImage = await cloudinary.uploader.upload(image);
+
+                        if (uploadedImage) {
+                           await arrayImageDetail.push(uploadedImage.secure_url);
+                        }
+                    } else {
+                        arrayImageDetail.push(image);
+                    }
+                } catch (error) {
+                    console.error("Lỗi khi upload ảnh:", error);
+                }
+            };
+        }
+        console.log("arrayImage:", arrayImageDetail);
+
+         const data = {
+            name,
+            image: newImage,
+            imageDetail: arrayImageDetail,
+            type,
+            countInStock,
+            price,
+            description,
+            discount,
+            seller
+         }
+        const respon = await Product.findByIdAndUpdate(id, data, { new: true });
+
+        console.log("update: ", respon);
         if (respon) {
             return res.status(200).json({ message: 'Cập nhật sản phẩm thành công', data: respon });
         }
@@ -97,7 +154,7 @@ const getAllProduct = async (req, res) => {
             let page = req.query.page || 1;
             let limit = req.query.limit || await Product.countDocuments();
             // console.log( page, limit);
-            console.log(req.query);
+            // console.log(req.query);
             if (req.query.sortKey && req.query.sortValue) {
                 let sortKey = req.query.sortKey;
                 let sortValue = req.query.sortValue;
@@ -174,6 +231,7 @@ const detailProduct = async (req, res) => {
     try {
         const id = req.params.id;
         const respon = await Product.findById(id);
+        console.log("resp", respon);
         if (respon) {
             return res.status(200).json({ message: 'Lấy sản phẩm thành công', data: respon });
         } else {

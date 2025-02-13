@@ -1,5 +1,4 @@
 import { Button, Input, message, Modal, Upload } from 'antd'
-import TableComponent from './TableComponent'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
@@ -8,29 +7,18 @@ import { FileType, getBase64 } from '../ultis';
 import { useMutationHook } from '../hooks/useMutationHook';
 import * as productService from '../services/productService';
 import Loading from './Loading';
-import { useQuery } from '@tanstack/react-query';
+import TableProducts from './TableProducts';
 
 
-export type FieldType = {
-    name?: string,
-    image?: string,
-    imageDetail?: string,
-    type?: string,
-    price?: string,
-    countInStock?: number,
-    description?: string,
-    discount?: number,
-    seller?: number
-};
 
 const AdminProduct = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [dataProduct, setDataProduct] = useState<FieldType>({
+    const [dataProduct, setDataProduct] = useState<productService.serviceProduct>({
         name: "",
         image: "",
         imageDetail: "",
         type: "",
-        price: "",
+        price: 0,
         countInStock: 0,
         description: "",
         discount: 0,
@@ -38,8 +26,8 @@ const AdminProduct = () => {
     });
     const [image, setImage] = useState("");
     const defaultFileList: UploadFile[] = dataProduct.image
-    ? [{ uid: "-1", name: "image.png", status: "done", url: dataProduct.image }]
-    : [];
+        ? [{ uid: "-1", name: "image.png", status: "done", url: dataProduct.image }]
+        : [];
 
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -95,7 +83,7 @@ const AdminProduct = () => {
     const handleChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDataProduct({
             ...dataProduct,
-            price: e.target.value
+            price: parseInt(e.target.value)
         })
     }
 
@@ -125,21 +113,10 @@ const AdminProduct = () => {
         })
     }
     const mutation = useMutationHook(
-        (data: FileType) => productService.createProduct(data)
+        (data: productService.serviceProduct) => productService.createProduct(data)
     );
-
-    const getAllProduct = async() => {
-        const res = await productService.getAllProduct();
-        return res
-    };
-
     const { isLoading, isSuccess, isError } = mutation;
-    const { isLoading: isLoadingProducts, isSuccess: isSuccessProducts, isError: isErrorProducts, data: products } = useQuery({queryKey:["products"], queryFn: getAllProduct})
 
-    console.log("isLoading: ",isLoadingProducts)
-    console.log("isLoading: ",isSuccessProducts)
-    console.log("isError: ", isErrorProducts)
-    console.log("products", products);
     useEffect(() => {
         if (isSuccess) {
             message.success("Tạo mới thành công");
@@ -150,7 +127,7 @@ const AdminProduct = () => {
                 image: "",
                 imageDetail: "",
                 type: "",
-                price: "",
+                price: 0,
                 countInStock: 0,
                 description: "",
                 discount: 0,
@@ -159,11 +136,12 @@ const AdminProduct = () => {
         } else if (isError) {
             message.error("Tạo sản phẩm không thành công");
         }
+
     }, [isSuccess, isModalOpen]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(dataProduct);
+        // console.log(dataProduct);
         mutation.mutate(dataProduct);
     };
     return (
@@ -171,7 +149,7 @@ const AdminProduct = () => {
             <h1 className='text-xl font-bold mb-2'>Quản lý sản phẩm</h1>
             <Button style={{ width: "120px", height: "120px", border: " dashed 1px" }} onClick={() => setIsModalOpen(true)} ><PlusOutlined style={{ fontSize: "40px" }} /></Button>
             <div className='mt-3'>
-                <TableComponent  products={dataProduct}/>
+                <TableProducts />
             </div>
             <Loading isLoading={isLoading} delay={200}>
                 <Modal title="Tạo mới sản phẩm" onCancel={handleCancel} open={isModalOpen} footer={false}>
@@ -182,7 +160,7 @@ const AdminProduct = () => {
                         </div>
                         <div className='space-y-2 flex items-center'>
                             <label htmlFor="image" className='text-base'>Image: </label>
-                            <Upload className='ml-[19px] mr-5' onChange={handleChangeImage} defaultFileList={defaultFileList}  maxCount={1}>
+                            <Upload className='ml-[19px] mr-5' onChange={handleChangeImage} defaultFileList={defaultFileList} maxCount={1}>
                                 <Button icon={<UploadOutlined />}>Upload</Button>
                             </Upload>
                             {dataProduct.image && (
@@ -205,11 +183,11 @@ const AdminProduct = () => {
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="discount">Giảm: </label>
-                            <Input className='w-[466px]' onChange={handleChangeDiscount} defaultValue={dataProduct.discount}/>
+                            <Input className='w-[466px]' onChange={handleChangeDiscount} defaultValue={dataProduct.discount} />
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="seller">Đã bán: </label>
-                            <Input className='w-[466px]' onChange={handleChangeSeller} defaultValue={dataProduct.seller}/>
+                            <Input className='w-[466px]' onChange={handleChangeSeller} defaultValue={dataProduct.seller} />
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="coutInStock">Số lượng còn lại:</label>
