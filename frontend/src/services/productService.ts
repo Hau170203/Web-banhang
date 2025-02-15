@@ -14,9 +14,15 @@ export interface serviceProduct {
     seller: number
 }
 const token = localStorage.getItem('token');
-export const getAllProduct = async () => {
-    const response = await axios.get(`${base_URL}all-product`);
-    return response.data;
+export const getAllProduct = async (search: string) => {
+    let response;
+    if(search){
+        response = await axios.get(`${base_URL}all-product?searchKey=name&searchValue=${search}`);
+        return response.data;
+    } else {
+        response = await axios.get(`${base_URL}all-product`);
+        return response.data;
+    }
 }
 
 export const createProduct = async (data: serviceProduct) => {
@@ -40,5 +46,14 @@ export const updateProduct = async (id: string, data: serviceProduct) => {
             'Authorization': `Bearer ${token}`
         }
     } )
+    return response;
+}
+
+export const deleteProduct = async (id: string) => {
+    const response = await axios.delete(`${base_URL}delete-product/${id}`,{
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
     return response;
 }

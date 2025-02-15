@@ -5,6 +5,9 @@ import { CategoryComponent } from "../components/CategoryComponent";
 import CartProduct from "../components/CartProduct";
 import * as productService from "../services/productService"
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import Loading from "../components/Loading";
 
 export interface product {
   _id: string,
@@ -19,11 +22,18 @@ export interface product {
   seller: number
 }
 export const Home = () => {
-  const fetchAllProduct = async () => {
-    const res = await productService.getAllProduct();
+  const search = useSelector((state: RootState)=> state.product.search);
+
+  const fetchAllProduct = async (search: string) => {
+    const res = await productService.getAllProduct(search);
     return res;
   }
-  const { data: products, isLoading } = useQuery(["products"], fetchAllProduct, { retry: 3, retryDelay: 1000 })
+
+  const { data: products, isLoading } = useQuery(
+    { queryKey: ["products", search], // Truyền search vào queryKey
+    queryFn: ({ queryKey }) => fetchAllProduct(queryKey[1]), // Lấy search từ queryKey
+    retry: 3,
+    retryDelay: 1000})
 
   // console.log("data", products);
   return (
@@ -63,6 +73,7 @@ export const Home = () => {
       </div>
 
       {/* product */}
+      <Loading isLoading={isLoading} delay={200}>
       <div className="mt-4">
         <h3 className="text-center pt-4 pb-2 text-2xl font-bold text-blue-500 border-blue-400 border-b-2">GỢI Ý HÔM NAY</h3>
         <div className="grid grid-cols-5 gap-2 pt-2">
@@ -73,6 +84,7 @@ export const Home = () => {
           )}
         </div>
       </div>
+      </Loading>
     </div>
   )
 }

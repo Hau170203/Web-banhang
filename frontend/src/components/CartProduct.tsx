@@ -18,7 +18,7 @@ const CartProduct: React.FC<{ product: product }> = ({ product }) => {
                             <Rate disabled allowHalf defaultValue={rating} />
                         </div>
                         <h4 className='text-center text-base text-gray-500 bg-gray-200'>{type}</h4>
-                        <h3 className='text-base'>{name}</h3>
+                        <h3 className='text-base'>{name.length > 26 ? (`${name.slice(0,26)} ...`) : name}</h3>
                         <p className='text-base text-red-500'>{price}<span></span></p>
                         <p className='text-base'>Số lượng còn lại: {countInStock}</p>
                         <p className='text-base'>Đã bán: {seller}</p>

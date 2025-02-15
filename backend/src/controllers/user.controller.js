@@ -6,14 +6,30 @@ const cloudinary = require("../helpers/cloudinary");
 
 module.exports.createUser = async (req, res) => {
     try {
-        const { name, email, password, phone } = req.body;
-        console.log(req.body);
+        const { name, email, password, phone, image, address, isAdmin } = req.body;
+        // console.log(req.body);
+        let avatar = "";
+        if(image) {
+            try {
+                // Upload ảnh lên Cloudinary
+                const uploadedImage = await cloudinary.uploader.upload(image);
+
+                if (uploadedImage) {
+                    avatar = uploadedImage.secure_url;
+                }
+            } catch (error) {
+                console.error("Lỗi khi upload ảnh:", error);
+            }
+        }
         const newUser = new User({
             name: name,
             email: email,
             password: md5(password),
             phone: phone,
-            isAdmin: false,
+            isAdmin: isAdmin || false,
+            avatar: avatar,
+            address: address,
+
         });
         const result = await newUser.save();
         if (result) {

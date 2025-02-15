@@ -65,10 +65,11 @@ module.exports.updateUser = async (req, res, next) => {
 module.exports.deleteUser = async (req, res, next) => {
     try {
         const id = req.params.id;
-        if(!req.cookies.access_token){
+        if(!req.headers.authorization){
             return res.status(400).json({message: 'Vui lòng nhập token'});
         }
-        const token = req.cookies.access_token;
+        const auth = req.headers.authorization;
+        const token = auth.split(" ")[1];
         const data = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         if(!data ){
             return res.status(400).json({message: 'token không hợp lệ'});
@@ -89,7 +90,7 @@ module.exports.deleteUser = async (req, res, next) => {
 
 module.exports.auth =  (req, res, next) => {
     try {
-        // console.log(req.headers.authorization)
+        console.log(req.headers.authorization)
         if(!req.headers.authorization){
             return res.status(400).json({message: 'Vui lòng nhập token'});
         }

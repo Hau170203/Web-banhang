@@ -134,7 +134,7 @@ const AdminProduct = () => {
                 seller: 0
             })
         } else if (isError) {
-            message.error("Tạo sản phẩm không thành công");
+            message.error("Tạo mới thất bại");
         }
 
     }, [isSuccess, isModalOpen]);
@@ -179,15 +179,15 @@ const AdminProduct = () => {
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="price">Giá: </label>
-                            <Input className='w-[466px]' onChange={handleChangePrice} defaultValue={dataProduct.price} />
+                            <Input className='w-[466px]' onChange={handleChangePrice} defaultValue={dataProduct.price}  required/>
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="discount">Giảm: </label>
-                            <Input className='w-[466px]' onChange={handleChangeDiscount} defaultValue={dataProduct.discount} />
+                            <Input className='w-[466px]' onChange={handleChangeDiscount} defaultValue={dataProduct.discount} required />
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="seller">Đã bán: </label>
-                            <Input className='w-[466px]' onChange={handleChangeSeller} defaultValue={dataProduct.seller} />
+                            <Input className='w-[466px]' onChange={handleChangeSeller} defaultValue={dataProduct.seller} required />
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="coutInStock">Số lượng còn lại:</label>

@@ -3,13 +3,15 @@ import { UploadOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react';
 import { UploadChangeParam } from 'antd/es/upload';
 import { FileType, getBase64 } from '../ultis';
-
 import { Editor } from '@tinymce/tinymce-react';
 import Loading from './Loading';
 import { useMutationHook } from '../hooks/useMutationHook';
 import * as productService from '../services/productService';
 
-const DrawerComponent = ({ open, setOpen, isLoading, data, id }: { open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, isLoading: boolean, data: productService.serviceProduct, id: string }) => {
+
+const DrawerComponent = (
+    { open, setOpen, isLoading, data, id, refetch}: 
+    { open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, isLoading: boolean, data: productService.serviceProduct, id: string, refetch: any}) => {
     const [dataProduct, setDataProduct] = useState<productService.serviceProduct>({
         name: data.name,
         image: data.image,
@@ -128,18 +130,22 @@ const DrawerComponent = ({ open, setOpen, isLoading, data, id }: { open: boolean
         setOpen(false);
     }
     const mutation = useMutationHook(
-        ({ id, data }: { id: string, data: productService.serviceProduct }) => productService.updateProduct(id, data)
-    );
+        ({ id, data }: { id: string; data: productService.serviceProduct }) =>
+          productService.updateProduct(id, data),
+      );
     const { isLoading: isLoadingProduct, isSuccess, isError } = mutation;
     // console.log("name", data.discount);
     useEffect(() => {
         if (isSuccess) {
             message.success("Cập nhật mới thành công");
+            refetch();
         } else if (isError) {
             message.error("Cập nhật không thành công");
         }
 
-    }, [isSuccess,dataProduct.image]);
+    }, [isSuccess]);
+
+    useEffect(() => {}, [,dataProduct.image]);
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(dataProduct);
