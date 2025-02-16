@@ -14,7 +14,7 @@ export interface serviceProduct {
     seller: number
 }
 const token = localStorage.getItem('token');
-export const getAllProduct = async (search: string) => {
+export const getAllProduct = async (search?: string) => {
     let response;
     if(search){
         response = await axios.get(`${base_URL}all-product?searchKey=name&searchValue=${search}`);
@@ -56,4 +56,9 @@ export const deleteProduct = async (id: string) => {
         }
     });
     return response;
+}
+
+export const getProductByType = async (type: string) => {
+    const response = await axios.get(`${base_URL}type-product/${type}`);
+    return response.data;
 }

@@ -242,10 +242,23 @@ const detailProduct = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
+
+const typeProduct = async (req, res) => {
+    try {
+        const type = req.params.type;
+        const respon = await Product.find({ type: type });
+        if (respon) {
+            return res.status(200).json({ message: 'Lấy sản phẩm theo loại thành công', data: respon });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
 module.exports = {
     createProduct,
     updateProduct,
     deleteProduct,
     getAllProduct,
-    detailProduct
+    detailProduct,
+    typeProduct
 }

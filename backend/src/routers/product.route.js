@@ -9,4 +9,5 @@ router.put('/update-product/:id', userMiddleware.auth, productMiddleware.updateP
 router.delete('/delete-product/:id', userMiddleware.auth, productMiddleware.deleteProduct , productController.deleteProduct);
 router.get('/all-product', productController.getAllProduct);
 router.get('/detail-product/:id', productController.detailProduct);
+router.get("/type-product/:type", productController.typeProduct);
 module.exports = router;

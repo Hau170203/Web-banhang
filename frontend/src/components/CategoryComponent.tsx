@@ -7,59 +7,69 @@ import LogoDior from "../assets/image/LogoDior.jpg";
 import LogoBalenciaga from "../assets/image/LogoBalenciaga.jpg";
 import LogoVans from "../assets/image/LogoVans.jpeg";
 import LogoMlb from "../assets/image/LogoMlb.jpeg";
+import { Link, Navigate } from "react-router";
 
 
-const logos = [
-    {
-        title: "Nike",
-        image: LogoNike
-    },
-    {
-        title: "Puma",
-        image: LogoPuma
-    },
-    {
-        title: "Adidas",
-        image: LogoAdidas
-    },
-    {
-        title: "Lining",
-        image: LogoLining
-    },
-    {
-        title: "Balenciaga",
-        image: LogoBalenciaga
-    },
-    {
-        title: "Gucci",
-        image: LogoGucci
-    },
-    {
-        title: "Dior",
-        image: LogoDior
-    },
-    {
-        title: "MLB",
-        image: LogoMlb
-    },
-    {
-        title: "Vans",
-        image: LogoVans
-    }
-];
+const Brands = [
+        {
+            title: "Nike",
+            image: LogoNike,
+            key: "nike"
+        },
+        {
+            title: "Puma",
+            image: LogoPuma,
+            key: "puma"
+        },
+        {
+            title: "Adidas",
+            image: LogoAdidas,
+            key: "adidas"
+        },
+        {
+            title: "Lining",
+            image: LogoLining,
+            key: "lining"
+        },
+        {
+            title: "Balenciaga",
+            image: LogoBalenciaga,
+            key: "balenciaga"
+        },
+        {
+            title: "Gucci",
+            image: LogoGucci,
+            key: "gucci"
+        },
+        {
+            title: "Dior",
+            image: LogoDior,
+            key: "dior"
+        },
+        {
+            title: "MLB",
+            image: LogoMlb,
+            key: "mlb"
+        },
+        {
+            title: "Vans",
+            image: LogoVans,
+            key: "vans"
+        }
+    ];
 
 export const CategoryComponent = () => {
 
     return (
         <>
-        {logos.map((logo, index) => (
-             <div key={index}>
-             <div className="size-28 ">
-               <img src={logo.image} alt={`logo ${logo.title}`} className="w-full h-full" />
-             </div>
-             <p className="text-center text-lg font-semibold">{logo.title}</p>
-           </div>
-        ))}
+            {Brands.map((brand, index) => (
+                <Link to={`/type-product/${brand.key}`} key={index}>
+                    <div className="size-28 ">
+                        <img src={brand.image} alt={`logo ${brand.title}`} className="w-full h-full" />
+                    </div>
+                    <p className="text-center text-lg font-semibold">{brand.title}</p>
+                </Link>
+            ))}
         </>
     )
 }

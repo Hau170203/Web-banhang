@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports.createUser = async (req, res, next) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const {name, email, password ,checkPassword, phone} = req.body;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         const checkUser = await User.findOne({
@@ -52,7 +52,7 @@ module.exports.updateUser = async (req, res, next) => {
         const checkUser = await User.findOne({
             _id: id
         });
-        console.log(checkUser)
+        // console.log(checkUser)
         if(!checkUser){
             return res.status(400).json({message: 'Người dùng không tồn tại'});
         }
@@ -90,7 +90,7 @@ module.exports.deleteUser = async (req, res, next) => {
 
 module.exports.auth =  (req, res, next) => {
     try {
-        console.log(req.headers.authorization)
+        // console.log(req.headers.authorization)
         if(!req.headers.authorization){
             return res.status(400).json({message: 'Vui lòng nhập token'});
         }

@@ -1,5 +1,5 @@
 import { Input, message } from "antd"
-import { Link, useNavigate } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import imageSignIn from "../assets/image/imageSignIn.webp"
 import React, { useEffect, useState } from "react"
 import * as userSevice from "../services/userService"
@@ -21,6 +21,8 @@ export interface decode {
 }
 export const SignIn = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    console.log('location', location)
     const [messageApi, contextHolder] = message.useMessage();
     const dispatch = useDispatch();
     const [dataForm, setDataForm] = useState<dataForm>({
@@ -58,7 +60,7 @@ export const SignIn = () => {
                     handleDetailUser(decoded?.id, token)
                 }
                 setTimeout(() => {
-                    navigate("/");
+                    navigate(`${location.state?.from || "/"}`);
                 }, 2000);
             }
         } else if (mutation.status == "error") {

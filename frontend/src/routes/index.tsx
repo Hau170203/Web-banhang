@@ -4,8 +4,10 @@ import { DetailProduct } from "../pages/DetailProduct"
 import DetailUser from "../pages/DetailUser"
 import { Home } from "../pages/Home"
 import { NotFound } from "../pages/NotFound"
+import Order from "../pages/Order"
 import { Register } from "../pages/Register"
 import { SignIn } from "../pages/SignIn"
+import TypeProduct from "../pages/TypeProduct"
 import { PrivateRouter } from "./PrivateRouter"
 export const routes = [
     {
@@ -17,7 +19,7 @@ export const routes = [
                 element: <Home />
             },
             {
-                path:"/detail-product",
+                path:"/detail-product/:id",
                 element: <DetailProduct />
             },
             {
@@ -32,6 +34,14 @@ export const routes = [
                 path: "/detail-user",
                 element: <DetailUser />
             },
+            {
+                path: "/type-product/:type",
+                element: <TypeProduct />
+            },
+            {
+                path: "/order",
+                element: <Order />
+            }
             
         ]
     },

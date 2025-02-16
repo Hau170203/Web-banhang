@@ -1,4 +1,4 @@
-import { Button, Input, message, Modal, Upload } from 'antd'
+import { Button, Input, message, Modal, Select, SelectProps, Upload } from 'antd'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
@@ -24,6 +24,48 @@ const AdminProduct = () => {
         discount: 0,
         seller: 0
     });
+    const options: SelectProps['options'] = [
+        {
+            value: "nike",
+            label: "Nike"
+        },
+        {
+            value: "adidas",
+            label: "Adidas"
+        },
+        {
+            value: "puma",
+            label: "Puma"
+        },
+        {
+            value: "lascote",
+            label: "Lascote"
+        },
+        {
+            value: "gucci",
+            label: "Gucci"
+        },
+        {
+            value: "dior",
+            label: "Dior"
+        },
+        {
+            value: "mlb",
+            label: "MLB"
+        },
+        {
+            value: "vans",
+            label: "Vans"
+        },
+        {
+            value: "lining",
+            label: "Lining"
+        },
+        {
+            value: "balenciaga",
+            label: "Balenciaga"
+        }
+    ];
     const [image, setImage] = useState("");
     const defaultFileList: UploadFile[] = dataProduct.image
         ? [{ uid: "-1", name: "image.png", status: "done", url: dataProduct.image }]
@@ -73,11 +115,11 @@ const AdminProduct = () => {
             imageDetail: newImageList
         })
     }
-    const handleChangeType = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
+    const handleChangeType = (value: string ) => {
+        console.log(value);
         setDataProduct({
             ...dataProduct,
-            type: e.target.value
+            type: value
         })
     }
     const handleChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,11 +217,17 @@ const AdminProduct = () => {
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="type">Thương hiệu: </label>
-                            <Input className='w-[466px]' onChange={handleChangeType} defaultValue={dataProduct.type} required />
+                            <Select
+                                size={"middle"}
+                                defaultValue="nike"
+                                onChange={handleChangeType}
+                                style={{ width: 200 }}
+                                options={options}
+                            />
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="price">Giá: </label>
-                            <Input className='w-[466px]' onChange={handleChangePrice} defaultValue={dataProduct.price}  required/>
+                            <Input className='w-[466px]' onChange={handleChangePrice} defaultValue={dataProduct.price} required />
                         </div>
                         <div className='space-y-2'>
                             <label htmlFor="discount">Giảm: </label>

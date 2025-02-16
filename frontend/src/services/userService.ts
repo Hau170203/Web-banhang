@@ -89,6 +89,7 @@ export const deleteUser = async (id: string) => {
 }
 
 export const getAllUser = async () => {
+    // console.log('token', token)
     const response = await axiosJWT.get(`${base_URL}all-user`, {
         headers: {
             "Authorization": `Bearer ${token}`
