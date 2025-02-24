@@ -88,7 +88,7 @@ export const SignIn = () => {
     return (
         <>
             {contextHolder}
-            <div className="h-[80vh] flex justify-center items-center z-0">
+            <div className="min-h-[80vh] flex justify-center items-center z-0">
                 <div className="flex rounded overflow-hidden">
                     <form className="w-96 bg-white p-4 " onSubmit={handleSubmit} >
                         <h4 className="text-3xl text-center font-semibold ">Đăng nhập</h4>

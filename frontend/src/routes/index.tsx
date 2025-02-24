@@ -5,6 +5,7 @@ import DetailUser from "../pages/DetailUser"
 import { Home } from "../pages/Home"
 import { NotFound } from "../pages/NotFound"
 import Order from "../pages/Order"
+import PayMoney from "../pages/PayMoney"
 import { Register } from "../pages/Register"
 import { SignIn } from "../pages/SignIn"
 import TypeProduct from "../pages/TypeProduct"
@@ -41,6 +42,10 @@ export const routes = [
             {
                 path: "/order",
                 element: <Order />
+            },
+            {
+                path: "/pay-money",
+                element: <PayMoney />
             }
             
         ]

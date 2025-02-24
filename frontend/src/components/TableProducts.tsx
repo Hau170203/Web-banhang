@@ -76,7 +76,7 @@ const TableProducts = () => {
   }, [rowSelected]);
 
   // console.log("detail product", detailProduct);
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
 
     setOpen(true);
   }

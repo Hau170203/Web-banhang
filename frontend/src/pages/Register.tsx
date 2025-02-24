@@ -70,7 +70,7 @@ export const Register = () => {
 
     return (
         <>
-            <div className="h-[80vh] flex justify-center items-center">
+            <div className="min-h-[80vh] flex justify-center items-center">
                 <div className="flex rounded overflow-hidden">
                     <form className="w-96 bg-white p-4 " onSubmit={handleSubmit} >
                         <h4 className="text-3xl text-center font-semibold ">Đăng ký</h4>

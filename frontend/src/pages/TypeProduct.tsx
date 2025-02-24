@@ -18,7 +18,7 @@ const TypeProduct = () => {
         const res = await productService.getProductByType(type);
         return res.data;
     };
-    console.log("typeProduct", typeProduct);
+    // console.log("typeProduct", typeProduct);
 
     const { data, isLoading } = useQuery({
         queryKey: ["typeProduct", typeProduct], queryFn: () => getTypeProduct(typeProduct),
@@ -31,7 +31,7 @@ const TypeProduct = () => {
         navigate(`/type-product/${type}`);
     }
 
-    console.log("data", data);
+    // console.log("data", data);
     return (
         <>
             <div className="flex justify-start">
